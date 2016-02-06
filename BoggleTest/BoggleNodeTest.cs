@@ -229,6 +229,64 @@ namespace BoggleTest
             n2.Y = n1.Y;
             Assert.IsTrue(n1.IsImmediatelyRightOf(n2));
         }
+
+        [TestMethod]
+        public void BoggleNode_IsNeighborsWith_ReturnsTrue_WhenNodesAreImmediateNeighbors()
+        {
+            BoggleNode n1 = new BoggleNode();
+            BoggleNode n2 = new BoggleNode();
+
+            n1.X = n1.Y = 10;
+
+            // left-neighbor
+            n2.X = n1.X + 1;
+            n2.Y = n1.Y;
+            Assert.IsTrue(n1.IsNeighborsWith(n2));
+
+            // top neighbor
+            n2.X = n1.X;
+            n2.Y = n1.Y + 1;
+            Assert.IsTrue(n1.IsNeighborsWith(n2));
+
+            // right neighbor
+            n2.X = n1.X - 1;
+            n2.Y = n1.Y;
+            Assert.IsTrue(n1.IsNeighborsWith(n2));
+
+            // bottom neighbor
+            n2.X = n1.X;
+            n2.Y = n1.Y - 1;
+            Assert.IsTrue(n1.IsNeighborsWith(n2));
+        }
+
+        [TestMethod]
+        public void BoggleNode_IsNeighborsWith_ReturnsFalse_WhenNodesAreNotImmediateNeighbors()
+        {
+            BoggleNode n1 = new BoggleNode();
+            BoggleNode n2 = new BoggleNode();
+
+            n1.X = n1.Y = 10;
+
+            // top-left
+            n2.X = n1.X + 1;
+            n2.Y = n1.Y + 1;
+            Assert.IsFalse(n1.IsNeighborsWith(n2));
+
+            // top-right
+            n2.X = n1.X - 1;
+            n2.Y = n1.Y + 1;
+            Assert.IsFalse(n1.IsNeighborsWith(n2));
+
+            // bottom-right
+            n2.X = n1.X - 1;
+            n2.Y = n1.Y - 1;
+            Assert.IsFalse(n1.IsNeighborsWith(n2));
+
+            // bottom-left
+            n2.X = n1.X + 1;
+            n2.Y = n1.Y - 1;
+            Assert.IsFalse(n1.IsNeighborsWith(n2));
+        }
     }
 }
 

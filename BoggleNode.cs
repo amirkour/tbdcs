@@ -53,11 +53,19 @@ namespace Boggle
             return (this.X == node.X + 1) && (this.Y == node.Y);
         }
 
+        /// <summary>
+        /// Helper that returns true if this node is an immediate
+        /// neighbor (not counting diagonal neighbors) to the given node,
+        /// false otherwise.
+        /// </summary>
         public bool IsNeighborsWith(BoggleNode node)
         {
             if (node == null) return false;
 
-            return false;
+            return this.IsImmediatelyAbove(node) ||
+                   this.IsImmediatelyBelow(node) ||
+                   this.IsImmediatelyLeftOf(node) ||
+                   this.IsImmediatelyRightOf(node);
         }
 
         public override bool Equals(object obj)
