@@ -53,15 +53,26 @@ namespace Boggle
             return this;
         }
 
-        //public List<BoggleNode> GetNeighborsFor(BoggleNode node)
-        //{
-        //    List<BoggleNode> neighbors = new List<BoggleNode>();
-        //    if (node == null) return neighbors;
-        //    if (_nodes.IsNullOrEmpty()) return neighbors;
-        //    foreach()
+        /// <summary>
+        /// Helper that returns all neighbors of the given node in this graph,
+        /// or an empty list if no neighbors exist for the given node, or
+        /// if the node is null.
+        /// </summary>
+        public ISet<BoggleNode> GetNeighborsFor(BoggleNode node)
+        {
+            ISet<BoggleNode> neighbors = new HashSet<BoggleNode>();
+            if (node == null) return neighbors;
+            if (_edges.IsNullOrEmpty()) return neighbors;
 
-        //    return neighbors;
-        //}
+            BoggleNode neighbor = null;
+            foreach (BoggleEdge nextEdge in _edges)
+            {
+                if (nextEdge.Contains(node, out neighbor))
+                    neighbors.Add(neighbor);
+            }
+
+            return neighbors;
+        }
 
         public override bool Equals(object obj)
         {
