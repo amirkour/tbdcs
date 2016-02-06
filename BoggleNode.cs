@@ -33,6 +33,16 @@ namespace Boggle
             return this.Y == (node.Y + 1) && this.X == node.X;
         }
 
+        /// <summary>
+        /// Helper that returns true if this node is immediately to
+        /// the left of the given node, false otherwise.
+        /// </summary>
+        public bool IsImmediatelyLeftOf(BoggleNode node)
+        {
+            if (node == null) return false;
+            return (this.X == node.X - 1) && (this.Y == node.Y);
+        }
+
         public bool IsNeighborsWith(BoggleNode node)
         {
             if (node == null) return false;
