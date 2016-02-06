@@ -74,5 +74,33 @@ namespace BoggleTest
             Assert.IsTrue(one.Equals(two));
             Assert.IsTrue(two.Equals(one));
         }
+
+        [TestMethod]
+        public void BoggleEdge_Contains_ReturnsTrue_WhenEdgeContainsAVertex()
+        {
+            BoggleNode n1 = new BoggleNode(10, 10);
+            BoggleNode n2 = new BoggleNode(20, 20);
+            BoggleEdge edge = new BoggleEdge(n1, n2);
+
+            BoggleNode neighborOfN1 = null;
+            bool result = edge.Contains(n1, out neighborOfN1);
+            Assert.IsTrue(result);
+            Assert.AreEqual(neighborOfN1, n2);
+        }
+
+        [TestMethod]
+        public void BoggleEdge_Contains_ReturnsFalse_WhenEdgeDoesntContainsVertext()
+        {
+            BoggleNode n1 = new BoggleNode(10, 10);
+            BoggleNode n2 = new BoggleNode(20, 20);
+            BoggleEdge edge = new BoggleEdge(n1, n2);
+
+            BoggleNode nullNeighbor = null;
+            bool result = edge.Contains(new BoggleNode(), out nullNeighbor);
+            Assert.IsFalse(result);
+            Assert.AreNotEqual(nullNeighbor, n2);
+            Assert.AreNotEqual(nullNeighbor, n1);
+            Assert.IsNull(nullNeighbor);
+        }
     }
 }

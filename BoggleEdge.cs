@@ -35,7 +35,27 @@ namespace Boggle
             return false;
         }
 
+        /// <summary>
+        /// Helper that checks to see if this edge has a vertex matching 
+        /// the given node - if so, returns true and populates the neighbor of
+        /// the given vertex for the out variable.  False/null otherwise.
+        /// </summary>
+        public bool Contains(BoggleNode node, out BoggleNode neighbor)
+        {
+            neighbor = null;
+            if(this.VertexOne.Equals(node))
+            {
+                neighbor = this.VertexTwo;
+                return true;
+            }
+            else if(this.VertexTwo.Equals(node))
+            {
+                neighbor = this.VertexOne;
+                return true;
+            }
 
+            return false;
+        }
         public override bool Equals(object obj)
         {
             BoggleEdge other = obj as BoggleEdge;
