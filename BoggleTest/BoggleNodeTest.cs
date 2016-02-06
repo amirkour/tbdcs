@@ -173,5 +173,62 @@ namespace BoggleTest
             n2.Y = n1.Y - 1;
             Assert.IsFalse(n1.IsImmediatelyLeftOf(n2));
         }
+
+        [TestMethod]
+        public void BoggleNode_IsImmediatelyRighttOf_ReturnsFalse_WhenCallerIsNotImmediatelyRightOfArg()
+        {
+            BoggleNode n1 = new BoggleNode();
+            BoggleNode n2 = new BoggleNode();
+
+            n1.X = n1.Y = 10;
+
+            // top-left
+            n2.X = n1.X + 1;
+            n2.Y = n1.Y + 1;
+            Assert.IsFalse(n1.IsImmediatelyRightOf(n2));
+
+            // top
+            n2.X = n1.X;
+            n2.Y = n1.Y + 1;
+            Assert.IsFalse(n1.IsImmediatelyRightOf(n2));
+
+            // top-right
+            n2.X = n1.X - 1;
+            n2.Y = n1.Y + 1;
+            Assert.IsFalse(n1.IsImmediatelyRightOf(n2));
+
+            // bottom-right
+            n2.X = n1.X - 1;
+            n2.Y = n1.Y - 1;
+            Assert.IsFalse(n1.IsImmediatelyRightOf(n2));
+
+            // bottom
+            n2.X = n1.X;
+            n1.Y = n1.Y - 1;
+            Assert.IsFalse(n1.IsImmediatelyRightOf(n2));
+
+            // bottom-left
+            n2.X = n1.X + 1;
+            n2.Y = n1.Y - 1;
+            Assert.IsFalse(n1.IsImmediatelyRightOf(n2));
+
+            // left
+            n2.X = n1.X + 1;
+            n2.Y = n1.Y;
+            Assert.IsFalse(n1.IsImmediatelyRightOf(n2));
+        }
+
+        [TestMethod]
+        public void BoggleNode_IsImmediatelyRightOf_ReturnsTrue_WhenCallerIsImmediatelyRightOfArg()
+        {
+            BoggleNode n1 = new BoggleNode();
+            BoggleNode n2 = new BoggleNode();
+
+            n1.X = n1.Y = 10;
+            n2.X = n1.X - 1;
+            n2.Y = n1.Y;
+            Assert.IsTrue(n1.IsImmediatelyRightOf(n2));
+        }
     }
 }
+
