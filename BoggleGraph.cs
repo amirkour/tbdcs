@@ -9,7 +9,10 @@ namespace Boggle
     public class BoggleGraph
     {
         protected List<BoggleNode> _nodes;
+        public List<BoggleNode> Nodes { get { return _nodes; } }
+
         protected List<BoggleEdge> _edges;
+        public List<BoggleEdge> Edges { get { return _edges; } }
 
         public int NodeCount { get { return _nodes != null ? _nodes.Count : 0; } }
         public int EdgeCount { get { return _edges != null ? _edges.Count : 0; } }
