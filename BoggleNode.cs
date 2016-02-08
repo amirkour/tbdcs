@@ -9,9 +9,12 @@ namespace Boggle
     {
         public int X { get; set; }
         public int Y { get; set; }
+        public char Character { get; set; }
 
         public BoggleNode() { this.X = 0; this.Y = 0; }
         public BoggleNode(int x, int y) { this.X = x;  this.Y = y; }
+        public BoggleNode(int x, int y, char c) { this.X = x; this.Y = y; this.Character = c; }
+        public BoggleNode(char c) : this() { this.Character = c; }
 
         /// <summary>
         /// Helper that returns true if this node is immediately above
@@ -74,17 +77,17 @@ namespace Boggle
             if (other == null)
                 return false;
 
-            return other.X == this.X && other.Y == this.Y;
+            return other.X == this.X && other.Y == this.Y && this.Character == other.Character;
         }
 
         public override int GetHashCode()
         {
-            return this.X.GetHashCode() ^ this.Y.GetHashCode();
+            return this.X.GetHashCode() ^ this.Y.GetHashCode() ^ this.Character.GetHashCode();
         }
 
         public override string ToString()
         {
-            return "{X: " + this.X + ", Y: " + this.Y + "}";
+            return "{X: " + this.X + ", Y: " + this.Y + ", Character: " + this.Character + "}";
         }
     }
 }
