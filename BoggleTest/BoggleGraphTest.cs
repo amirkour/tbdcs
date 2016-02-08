@@ -202,10 +202,16 @@ namespace BoggleTest
             graph.Add(new BoggleEdge(node, neighbor1))
                  .Add(new BoggleEdge(node, neighbor2));
 
+            // then make sure they come back
             ISet<BoggleNode> neighbors = graph.GetNeighborsFor(node);
             Assert.IsTrue(neighbors.Count == 2);
             Assert.IsTrue(neighbors.Contains(neighbor1));
             Assert.IsTrue(neighbors.Contains(neighbor2));
+
+            // neighbor1 should have a neighbor too!
+            neighbors = graph.GetNeighborsFor(neighbor1);
+            Assert.IsTrue(neighbors.Count == 1);
+            Assert.IsTrue(neighbors.Contains(node));
         }
     }
 }
