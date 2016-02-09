@@ -52,7 +52,6 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="BoggleEdgeTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BoggleGraphTest.cs" />
     <Compile Include="BoggleNodeTest.cs" />

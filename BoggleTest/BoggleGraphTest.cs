@@ -10,208 +10,129 @@ namespace BoggleTest
     public class BoggleGraphTest
     {
         [TestMethod]
-        public void BoggleGraph_Contains_Node_WhenNodeNotPresent_ReturnsFalse()
-        {
-            BoggleGraph graph = new BoggleGraph();
-            Assert.IsFalse(graph.Contains(new BoggleNode()));
-        }
-
-        [TestMethod]
-        public void BoggleGraph_Contains_Node_WhenNodePresent_ReturnsTrue()
-        {
-            BoggleNode node = new BoggleNode(0, 1);
-            BoggleGraph graph = new BoggleGraph();
-            graph.Add(node);
-            Assert.IsTrue(graph.Contains(node));
-        }
-
-        [TestMethod]
-        public void BoggleGraph_Contains_Edge_WhenEdgeNotPresent_ReturnsFalse()
-        {
-            Assert.IsFalse(new BoggleGraph().Contains(new BoggleEdge()));
-        }
-
-        [TestMethod]
-        public void BoggleGraph_Contains_Edge_WhenEdgePresent_ReturnsTrue()
-        {
-            BoggleEdge edge = new BoggleEdge(new BoggleNode(0, 0), new BoggleNode(1, 0));
-            BoggleGraph graph = new BoggleGraph();
-            graph.Add(edge);
-            Assert.IsTrue(graph.Contains(edge));
-        }
-
-        [TestMethod]
-        public void BoggleGraph_Add_Node_ReturnsTheGraph()
-        {
-            BoggleGraph graph = new BoggleGraph();
-            Assert.AreEqual(graph, graph.Add(new BoggleNode()));
-        }
-
-        [TestMethod]
-        public void BoggleGraph_Add_Node_AddsTheNode()
-        {
-            BoggleGraph graph = new BoggleGraph();
-            Assert.IsTrue(graph.NodeCount == 0);
-
-            graph.Add(new BoggleNode());
-            Assert.IsTrue(graph.NodeCount == 1);
-        }
-
-        [TestMethod]
-        public void BoggleGraph_Add_Node_DoesntAddDupes()
-        {
-            BoggleNode node = new BoggleNode(0, 0);
-            BoggleGraph graph = new BoggleGraph();
-
-            graph.Add(node);
-            Assert.IsTrue(graph.NodeCount == 1);
-            graph.Add(node);
-            Assert.IsTrue(graph.NodeCount == 1);
-            graph.Add(node);
-            Assert.IsTrue(graph.NodeCount == 1);
-        }
-
-        [TestMethod]
-        public void BoggleGraph_Add_Edge_ReturnsTheGraph()
-        {
-            BoggleGraph graph = new BoggleGraph();
-            Assert.AreEqual(graph, graph.Add(new BoggleEdge()));
-        }
-
-        [TestMethod]
-        public void BoggleGraph_Add_Edge_AddsTheNode()
-        {
-            BoggleGraph graph = new BoggleGraph();
-            Assert.IsTrue(graph.EdgeCount == 0);
-
-            graph.Add(new BoggleEdge());
-            Assert.IsTrue(graph.EdgeCount == 1);
-        }
-
-        [TestMethod]
-        public void BoggleGraph_Add_Edge_DoesntAddDupes()
-        {
-            BoggleEdge edge = new BoggleEdge(new BoggleNode(0, 0), new BoggleNode(1, 0));
-            BoggleGraph graph = new BoggleGraph();
-
-            graph.Add(edge);
-            Assert.IsTrue(graph.EdgeCount == 1);
-            graph.Add(edge);
-            Assert.IsTrue(graph.EdgeCount == 1);
-            graph.Add(edge);
-            Assert.IsTrue(graph.EdgeCount == 1);
-        }
-
-        [TestMethod]
-        public void BoggleGraph_Equals_ReturnsTrueWhenEquals_RegardlesOfNodeOrdering()
+        public void BoggleGraph_Equals_ReturnsTrue_WhenBothGraphArraysAreNull()
         {
             BoggleGraph g1 = new BoggleGraph();
             BoggleGraph g2 = new BoggleGraph();
-
-            BoggleNode n1 = new BoggleNode(0, 0);
-            BoggleNode n2 = new BoggleNode(1, 0);
-            BoggleNode n3 = new BoggleNode(2, 0);
-
-            // insert nodes out of order to verify that ordering doesn't effect graph equality
-            g1.Add(n1);
-            g1.Add(n2);
-            g1.Add(n3);
-            g2.Add(n3);
-            g2.Add(n1);
-            g2.Add(n2);
-
             Assert.AreEqual(g1, g2);
+            Assert.AreEqual(g2, g1);
         }
 
         [TestMethod]
-        public void BoggleGraph_Equals_ReturnsTrueWhenEquals_RegardlesOfEdgeOrdering()
+        public void BoggleGraph_Equals_ReturnsTrue_WhenEqual()
         {
-            BoggleGraph g1 = new BoggleGraph();
-            BoggleGraph g2 = new BoggleGraph();
-
-            BoggleEdge e1 = new BoggleEdge(new BoggleNode(0, 0), new BoggleNode(1, 0));
-            BoggleEdge e2 = new BoggleEdge(new BoggleNode(0, 0), new BoggleNode(0, 1));
-            BoggleEdge e3 = new BoggleEdge(new BoggleNode(1, 0), new BoggleNode(1, 1));
-
-            // insert edges out of order to verify that ordering doesn't effect graph equality
-            g1.Add(e1);
-            g1.Add(e2);
-            g1.Add(e3);
-            g2.Add(e3);
-            g2.Add(e1);
-            g2.Add(e2);
-
+            BoggleGraph g1 = Utils.BuildRandomGraph(3, 3);
+            BoggleGraph g2 = new BoggleGraph(g1.Graph);
             Assert.AreEqual(g1, g2);
+            Assert.AreEqual(g2, g1);
         }
 
         [TestMethod]
-        public void BoggleGraph_Equals_ReturnsFalse_WhenGraphsAreUnequal()
+        public void BoggleGraph_Equals_ReturnsFalse_WhenOneGraphArrayIsNull()
         {
-            BoggleGraph g1 = new BoggleGraph();
-            BoggleGraph g2 = new BoggleGraph();
-
-            g1.Add(new BoggleNode());
+            BoggleGraph g1 = new BoggleGraph(1, 1);
+            BoggleGraph g2 = new BoggleGraph(null);
             Assert.AreNotEqual(g1, g2);
-
-            g1 = new BoggleGraph();
-            g1.Add(new BoggleEdge());
-            Assert.AreNotEqual(g1, g2);
-
-            g2.Add(new BoggleEdge(new BoggleNode(0, 1), null));
-            Assert.AreNotEqual(g1, g2);
-        }
-
-        //[TestMethod]
-        public void BoggleGraph_GetNeighborsFor_ReturnsEmptyListForNullNode()
-        {
-            ISet<BoggleNode> neighbors = new BoggleGraph().GetNeighborsFor(null);
-            Assert.IsNotNull(neighbors);
-            Assert.IsTrue(neighbors.Count <= 0);
+            Assert.AreNotEqual(g2, g1);
         }
 
         [TestMethod]
-        public void BoggleGraph_GetNeighborsFor_ReturnsEmptyListIfThereAreNoNeighbors()
+        public void BoggleGraph_Equals_ReturnsFalse_WhenUnequal()
         {
-            BoggleGraph graph = new BoggleGraph();
-            BoggleNode node = new BoggleNode(10, 10);
-
-            // throw a few rando nodes in there, making sure they're not neighbors to our node
-            graph.Add(new BoggleNode(node.X + 5, node.Y + 1));
-            graph.Add(new BoggleNode(node.X + 1, node.Y + 5));
-            graph.Add(new BoggleEdge()
-            {
-                VertexOne = new BoggleNode(1, 2),       // throw an edge in, with nodes != node
-                VertexTwo = new BoggleNode(123, 234)
-            });
-
-            ISet<BoggleNode> neighbors = graph.GetNeighborsFor(node);
-            Assert.IsNotNull(neighbors);
-            Assert.IsTrue(neighbors.Count <= 0);
+            BoggleGraph g1 = Utils.BuildRandomGraph(2, 2);
+            BoggleGraph g2 = Utils.BuildRandomGraph(2, 1);
+            Assert.AreNotEqual(g1, g2);
+            Assert.AreNotEqual(g2, g1);
         }
 
         [TestMethod]
-        public void BoggleGraph_GetNeighborsFor_ReturnsNeighborsWhenThereAreSome()
+        public void BoggleGraph_InBounds_ReturnsFalse_WhenOutOfBounds()
         {
-            BoggleGraph graph = new BoggleGraph();
-            BoggleNode node = new BoggleNode(10, 10);
-            Random rand = new Random();
+            BoggleGraph graph = new BoggleGraph(2, 2);
 
-            // first, give the node two neighbors
-            BoggleNode neighbor1 = new BoggleNode(rand.Next(), rand.Next());
-            BoggleNode neighbor2 = new BoggleNode(rand.Next(), rand.Next());
-            graph.Add(new BoggleEdge(node, neighbor1))
-                 .Add(new BoggleEdge(node, neighbor2));
+            BoggleNode dummy = new BoggleNode();
+            Assert.IsFalse(graph.InBounds(-1, 0, out dummy));
+            Assert.IsNull(dummy);
 
-            // then make sure they come back
-            ISet<BoggleNode> neighbors = graph.GetNeighborsFor(node);
+            dummy = new BoggleNode();
+            Assert.IsFalse(graph.InBounds(0, -1, out dummy));
+            Assert.IsNull(dummy);
+
+            dummy = new BoggleNode();
+            Assert.IsFalse(graph.InBounds(0, 2, out dummy));
+            Assert.IsNull(dummy);
+
+            dummy = new BoggleNode();
+            Assert.IsFalse(graph.InBounds(2, 0, out dummy));
+            Assert.IsNull(dummy);
+        }
+
+        [TestMethod]
+        public void BoggleGraph_InBounds_ReturnsTrue_WhenInBounds()
+        {
+            BoggleGraph graph = Utils.BuildRandomGraph(2, 2);
+
+            BoggleNode dummy = null;
+            Assert.IsTrue(graph.InBounds(0, 0, out dummy));
+            Assert.AreEqual(dummy, graph.Graph[0][0]);
+
+            dummy = null;
+            Assert.IsTrue(graph.InBounds(1, 1, out dummy));
+            Assert.AreEqual(dummy, graph.Graph[1][1]);
+
+            dummy = null;
+            Assert.IsTrue(graph.InBounds(0, 1, out dummy));
+            Assert.AreEqual(dummy, graph.Graph[0][1]);
+
+            dummy = null;
+            Assert.IsTrue(graph.InBounds(1, 0, out dummy));
+            Assert.AreEqual(dummy, graph.Graph[1][0]);
+
+            dummy = null;
+            Assert.IsTrue(graph.InBounds(1, 1, out dummy));
+            Assert.AreEqual(dummy, graph.Graph[1][1]);
+        }
+
+        [TestMethod]
+        public void BoggleGraph_GetNeighborsFor_ReturnsNeighbors()
+        {
+            BoggleGraph graph = Utils.BuildRandomGraph(3, 3);
+
+            ISet<BoggleNode> neighbors = graph.GetNeighborsFor(1, 1);
+            Assert.IsTrue(neighbors.Count == 4);
+            Assert.IsTrue(neighbors.Contains(graph.Graph[0][1]));
+            Assert.IsTrue(neighbors.Contains(graph.Graph[1][0]));
+            Assert.IsTrue(neighbors.Contains(graph.Graph[2][1]));
+            Assert.IsTrue(neighbors.Contains(graph.Graph[1][2]));
+
+            neighbors = graph.GetNeighborsFor(0, 0);
             Assert.IsTrue(neighbors.Count == 2);
-            Assert.IsTrue(neighbors.Contains(neighbor1));
-            Assert.IsTrue(neighbors.Contains(neighbor2));
+            Assert.IsTrue(neighbors.Contains(graph.Graph[1][0]));
+            Assert.IsTrue(neighbors.Contains(graph.Graph[0][1]));
 
-            // neighbor1 should have a neighbor too!
-            neighbors = graph.GetNeighborsFor(neighbor1);
-            Assert.IsTrue(neighbors.Count == 1);
-            Assert.IsTrue(neighbors.Contains(node));
+            neighbors = graph.GetNeighborsFor(1, 0);
+            Assert.IsTrue(neighbors.Count == 3);
+            Assert.IsTrue(neighbors.Contains(graph.Graph[0][0]));
+            Assert.IsTrue(neighbors.Contains(graph.Graph[2][0]));
+            Assert.IsTrue(neighbors.Contains(graph.Graph[1][1]));
+
+            neighbors = graph.GetNeighborsFor(2, 1);
+            Assert.IsTrue(neighbors.Count == 3);
+            Assert.IsTrue(neighbors.Contains(graph.Graph[2][0]));
+            Assert.IsTrue(neighbors.Contains(graph.Graph[2][2]));
+            Assert.IsTrue(neighbors.Contains(graph.Graph[1][1]));
+        }
+
+        [TestMethod]
+        public void BoggleGraph_GetNeighborsFor_ReturnsEmptySet_WhenOutOfBounds()
+        {
+            BoggleGraph graph = new BoggleGraph(2, 2);
+
+            ISet<BoggleNode> neighbors = graph.GetNeighborsFor(-1, -1);
+            Assert.IsTrue(neighbors.Count <= 0);
+
+            neighbors = graph.GetNeighborsFor(2, 0);
+            Assert.IsTrue(neighbors.Count <= 0);
         }
     }
 }

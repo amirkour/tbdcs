@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,6 +38,7 @@ namespace App
 
         public void RecursivelyFindAllWords(BoggleGraph graph, BoggleNodePath currentPath, Dictionary<BoggleNode, List<string>> allResults)
         {
+            /*
             if (graph == null) return;
             if (currentPath == null) return;
             if (allResults == null) return;
@@ -75,10 +77,99 @@ namespace App
                 if (secondToLastNodeInPath != null && secondToLastNodeInPath.Equals(neighbor)) continue;
                 RecursivelyFindAllWords(graph, BoggleNodePath.Concat(currentPath, neighbor), allResults);
             }
+            */
+        }
+        public int GetRowAndColCountFromUser()
+        {
+            return 3;//todo
+        }
+        public char[][] GetCharArrayFromUser()
+        {
+            int rowAndColCount = GetRowAndColCountFromUser();
+
+            char[][] array = new char[rowAndColCount][];
+            for (int i = 0; i < rowAndColCount; i++)
+                array[i] = new char[rowAndColCount];
+
+            Console.WriteLine("");
+            Console.WriteLine("Graph will be " + rowAndColCount + " x " + rowAndColCount + " ...");
+            Console.WriteLine("");
+
+            int done = 0;
+            do
+            {
+                Console.WriteLine("Enter characters for row " + (done + 1) + " (must enter exactly " + rowAndColCount + " letters): ");
+                string input = Console.ReadLine();
+                Console.WriteLine("");
+
+                if (input.Length != rowAndColCount)
+                {
+                    Console.WriteLine("You must enter exactly " + rowAndColCount + " characters!");
+                    continue;
+                }
+
+                if(Regex.IsMatch(input, "[^abcdefghijklmnopqrstuvwxyz]", RegexOptions.IgnoreCase))
+                {
+                    Console.WriteLine("Only letters are allowed!");
+                    continue;
+                }
+                
+                for(int i = 0; i < rowAndColCount; i++)
+                    array[done][i] = input[i];
+
+                done++;
+                Console.WriteLine("Got it!");
+                Console.WriteLine("");
+
+            } while (done < rowAndColCount);
+
+            return array;
+        }
+
+        public BoggleGraph CreateGraphFor(char[][] charArray)
+        {
+            /*
+            BoggleGraph graph = new BoggleGraph();
+            int cols = charArray[0].Length;
+            int rows = charArray.Length;
+            BoggleNode rowPrev = null;
+            BoggleNode colPrev = null;
+
+            for(int i = 0; i < rows; i++)
+            {
+                for(int j = 0; j < cols; j++)
+                {
+                    if (i > 0)
+                    {
+                        rowPrev = new BoggleNode(j, i - 1, charArray[i - 1][j]);
+                        if (!graph.Contains(rowPrev)) throw new Exception("The graph should have this node: " + rowPrev.ToString());
+                    }
+                    if (j > 0)
+                    {
+                        colPrev = new BoggleNode(j - 1, i, charArray[i][j - 1]);
+                        if (!graph.Contains(colPrev)) throw new Exception("The graph should have this node: " + colPrev.ToString());
+                    }
+                }
+            }
+
+            return graph;
+            */
+            return null; // todo
         }
 
         public void Test()
         {
+            char[][] charArray = GetCharArrayFromUser();
+            for (int i = 0; i < charArray[0].Length; i++)
+            {
+                Console.Write("[ ");
+                for (int j = 0; j < charArray.Length; j++)
+                    Console.Write(charArray[i][j] + " ");
+
+                Console.WriteLine("]");
+            }
+
+            /*
             BoggleGraph graph = new BoggleGraph();
 
             BoggleNode one = new BoggleNode() { X = 0, Y = 0, Character = 'A' };
@@ -107,6 +198,7 @@ namespace App
                 foreach (String str in result.Value)
                     Console.WriteLine("  - " + str);
             }
+            */
         }
 
         public static void Main(string[] args)

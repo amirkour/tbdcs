@@ -8,52 +8,37 @@ namespace Boggle
 {
     public class BoggleGraph
     {
-        protected List<BoggleNode> _nodes;
-        public List<BoggleNode> Nodes { get { return _nodes; } }
+        protected BoggleNode[][] _graph;
+        public BoggleNode[][] Graph { get { return _graph; } }
 
-        protected List<BoggleEdge> _edges;
-        public List<BoggleEdge> Edges { get { return _edges; } }
-
-        public int NodeCount { get { return _nodes != null ? _nodes.Count : 0; } }
-        public int EdgeCount { get { return _edges != null ? _edges.Count : 0; } }
-
-        public bool Contains(BoggleNode node)
+        public BoggleGraph() { }
+        public BoggleGraph(int cols, int rows)
         {
-            if (node == null || _nodes == null) return false;
-
-            return _nodes.Contains(node);
+            _graph = new BoggleNode[cols][];
+            for (int i = 0; i < cols; i++)
+                _graph[i] = new BoggleNode[rows];
+        }
+        public BoggleGraph(BoggleNode[][] newGraph)
+        {
+            _graph = newGraph;
         }
 
-        public bool Contains(BoggleEdge edge)
+        /// <summary>
+        /// Helper that determines if the given x,y coords are in-bounds for this graph.
+        /// Returns true and populates the given output-node if so, false/null otherwise.
+        /// </summary>
+        public bool InBounds(int x, int y, out BoggleNode node)
         {
-            if (_edges == null || edge == null) return false;
+            node = null;
+            if (_graph == null) return false;
+            if (x < 0 || y < 0) return false;
+            if (x >= _graph.Length) return false;
 
-            return _edges.Contains(edge);
-        }
+            BoggleNode[] row = _graph[x];
+            if (y >= row.Length) return false;
 
-        public BoggleGraph Add(BoggleNode node)
-        {
-            if (_nodes == null)
-                _nodes = new List<BoggleNode>();
-
-            if(node != null && !this.Contains(node))
-                _nodes.Add(node);
-
-            return this;
-        }
-
-        public BoggleGraph Add(BoggleEdge edge)
-        {
-            if (_edges == null)
-                _edges = new List<BoggleEdge>();
-
-            if (edge != null && !this.Contains(edge))
-                _edges.Add(edge);
-
-            this.Add(edge.VertexOne);
-            this.Add(edge.VertexTwo);
-
-            return this;
+            node = row[y];
+            return true;
         }
 
         /// <summary>
@@ -61,18 +46,23 @@ namespace Boggle
         /// or an empty list if no neighbors exist for the given node, or
         /// if the node is null.
         /// </summary>
-        public ISet<BoggleNode> GetNeighborsFor(BoggleNode node)
+        public ISet<BoggleNode> GetNeighborsFor(int x, int y)
         {
             ISet<BoggleNode> neighbors = new HashSet<BoggleNode>();
-            if (node == null) return neighbors;
-            if (_edges.IsNullOrEmpty()) return neighbors;
+            BoggleNode nextNode = null;
+            if (!this.InBounds(x, y, out nextNode)) return neighbors;
+            
+            // top:
+            if (InBounds(x, y - 1, out nextNode)) neighbors.Add(nextNode);
 
-            BoggleNode neighbor = null;
-            foreach (BoggleEdge nextEdge in _edges)
-            {
-                if (nextEdge.Contains(node, out neighbor))
-                    neighbors.Add(neighbor);
-            }
+            // left:
+            if (InBounds(x - 1, y, out nextNode)) neighbors.Add(nextNode);
+
+            // bottom:
+            if (InBounds(x, y + 1, out nextNode)) neighbors.Add(nextNode);
+
+            // right
+            if (InBounds(x + 1, y, out nextNode)) neighbors.Add(nextNode);
 
             return neighbors;
         }
@@ -81,22 +71,27 @@ namespace Boggle
         {
             BoggleGraph other = obj as BoggleGraph;
             if (other == null) return false;
-            
-            if (other.NodeCount != this.NodeCount) return false;
-            if (other.EdgeCount != this.EdgeCount) return false;
 
-            if(_nodes != null)
+            if (_graph == null && other.Graph == null)
+                return true;
+
+            if ((_graph == null && other.Graph != null) ||
+                (_graph != null && other.Graph == null))
+                return false;
+
+            BoggleNode[][] thisGraph = _graph;
+            BoggleNode[][] otherGraph = other.Graph;
+            if (thisGraph.Length != otherGraph.Length) return false;
+
+            // they have equal length, but if the array has length 0 then just stop now
+            if (thisGraph.Length <= 0) return true;
+            
+            for(int i = 0; i < thisGraph.Length; i++)
             {
-                foreach(BoggleNode node in _nodes)
+                if (thisGraph[i].Length != otherGraph[i].Length) return false;
+                for(int j = 0; j < this.Graph[0].Length; j++)
                 {
-                    if (!other.Contains(node)) return false;
-                }
-            }
-            if(_edges != null)
-            {
-                foreach(BoggleEdge edge in _edges)
-                {
-                    if (!other.Contains(edge)) return false;
+                    if (!thisGraph[i][j].Equals(otherGraph[i][j])) return false;
                 }
             }
 
@@ -106,15 +101,15 @@ namespace Boggle
         public override int GetHashCode()
         {
             int code = 0;
-            if (!_nodes.IsNullOrEmpty())
+            if(_graph != null)
             {
-                foreach (BoggleNode node in _nodes)
-                    code ^= node.GetHashCode();
-            }
-            if(!_edges.IsNullOrEmpty())
-            {
-                foreach (BoggleEdge edge in _edges)
-                    code ^= edge.GetHashCode();
+                for(int i = 0; i < _graph.Length; i++)
+                {
+                    for(int j = 0; j < _graph[i].Length; j++)
+                    {
+                        code ^= _graph[i][j].GetHashCode();
+                    }
+                }
             }
 
             return code;
@@ -122,21 +117,22 @@ namespace Boggle
 
         public override string ToString()
         {
-            string str = "Nodes: ";
-            if(!_nodes.IsNullOrEmpty())
+            StringBuilder bldr = new StringBuilder();
+            if(_graph != null)
             {
-                foreach (BoggleNode node in _nodes)
-                    str += node.ToString() + " ";
+                for(int i = 0; i < _graph.Length; i++)
+                {
+                    bldr.Append("[");
+                    for(int j = 0; j < _graph[i].Length; j++)
+                    {
+                        bldr.Append(_graph[i][j].ToString());
+                        bldr.Append(",");
+                    }
+                    bldr.Append("]");
+                }
             }
 
-            str += "Edges: ";
-            if(!_edges.IsNullOrEmpty())
-            {
-                foreach (BoggleEdge edge in _edges)
-                    str += edge.ToString() + " ";
-            }
-
-            return str;
+            return "Graph: {" + bldr.ToString() + "}";
         }
     }
 }

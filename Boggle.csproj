@@ -40,7 +40,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BoggleEdge.cs" />
     <Compile Include="BoggleGraph.cs" />
     <Compile Include="BoggleNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
